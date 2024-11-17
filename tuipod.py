@@ -9,7 +9,9 @@ APPLICATION_VERSION = "2024-11-12.5c24b1e90d6c4ae28faceec6bbcdff7a"
 
 
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Header
+from textual.containers import Container
+from textual.widget import Widget
+from textual.widgets import Footer, Header, Input, Label, Static
 
 
 class Episode:
@@ -53,6 +55,64 @@ class Search:
         self.sort_order = sort_order
 
 
+class SearchInput(Widget):
+
+    DEFAULT_CSS = """
+    SearchInput {
+        layout: horizontal;
+        height: auto;
+    }
+
+    SearchInput Label {
+        padding: 1;
+    }
+
+    SearchInput Input {
+        width: 1fr;
+    }
+    """
+
+    def compose(self) -> ComposeResult:
+        yield Label("Search")
+        yield Input()
+
+
+class PodcastList(Widget):
+
+    DEFAULT_CSS = """
+    PodcastList {
+        height: auto;
+    }
+    """
+
+    def compose(self) -> ComposeResult:
+        yield Static("Podcasts...")
+
+
+class EpisodeList(Widget):
+
+    DEFAULT_CSS = """
+    EpisodeList {
+        height: auto;
+    }
+    """
+
+    def compose(self) -> ComposeResult:
+        yield Static("Episodes...")
+
+
+class PodcastPlayer(Widget):
+
+    DEFAULT_CSS = """
+    PodcastPlayer {
+        height: auto;
+    }
+    """
+
+    def compose(self) -> ComposeResult:
+        yield Static("Player")
+
+
 class PodcastApp(App):
 
     BINDINGS = [
@@ -67,6 +127,12 @@ class PodcastApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header()
+
+        yield SearchInput()
+        yield PodcastList()
+        yield EpisodeList()
+        yield PodcastPlayer()
+
         yield Footer()
 
     def action_toggle_dark(self) -> None:
