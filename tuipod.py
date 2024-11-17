@@ -7,6 +7,11 @@
 APPLICATION_NAME = "tuipod"
 APPLICATION_VERSION = "2024-11-12.5c24b1e90d6c4ae28faceec6bbcdff7a"
 
+
+from textual.app import App, ComposeResult
+from textual.widgets import Footer, Header
+
+
 class Episode:
 
     def __init__(self, title: str, url: str, description: str, duration: int) -> None:
@@ -24,10 +29,8 @@ class Podcast:
         self.description = description
         self.episodes = []
 
-
     def add_episode(self, episode: Episode) -> None:
         self.episodes.append(episode)
-
 
     def remove_episode(self, url: str) -> None:
         for e in self.episodes:
@@ -50,16 +53,27 @@ class Search:
         self.sort_order = sort_order
 
 
-class PodcastApp:
+class PodcastApp(App):
 
+    BINDINGS = [
+        ("d", "toggle_dark", "Toggle dark mode"),
+        ("q", "quit_application", "Quit application")
+    ]
+    TITLE = APPLICATION_NAME
+    SUB_TITLE = APPLICATION_VERSION
+    
     def __init__(self) -> None:
-        self.name = APPLICATION_NAME
-        self.version = APPLICATION_VERSION
-        self.podcasts = []
+        super().__init__()
 
+    def compose(self) -> ComposeResult:
+        yield Header()
+        yield Footer()
 
-    def run(self) -> None:
-        print("%s (version %s)" % (self.name, self.version))
+    def action_toggle_dark(self) -> None:
+        self.dark = not self.dark
+
+    def action_quit_application(self) -> None:
+        self.exit()
 
 
 if __name__ == "__main__":
