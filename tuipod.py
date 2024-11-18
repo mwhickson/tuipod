@@ -17,15 +17,17 @@ from textual.widgets import Button, DataTable, Footer, Header, Input, Label, Sta
 import urllib.request
 import urllib.parse
 import uuid
+import xml.etree.ElementTree as ET
 
 
 class Episode:
 
-    def __init__(self, title: str, url: str, description: str, duration: int) -> None:
+    def __init__(self, title: str, url: str, description: str, pubdate: str, duration: int) -> None:
         self.id = uuid.uuid4().hex
         self.title = title
         self.url = url
         self.description = description
+        self.pubdate = pubdate
         self.duration = duration
 
     def __lt__(self, other):
@@ -54,7 +56,21 @@ class Podcast:
                 break
 
     def get_episode_list(self) -> []:
-        return []
+        with urllib.request.urlopen(self.url) as response:
+            result = response.read()
+
+        episodes = ET.fromstring(result)
+        for e in episodes.iter("item"):
+            title = e.find("title").text
+            description = e.find("description").text
+            enclosure = e.find("enclosure")
+            url = enclosure.attrib["url"]
+            pubdate = e.find("pubDate").text
+            duration = 0 #e.find("itunes:duration").text
+
+            self.episodes.append(Episode(title, url, description, pubdate, duration))
+
+        return self.episodes 
 
 
 class Player:
@@ -222,6 +238,7 @@ class PodcastApp(App):
         self.searcher = Search("")    
         self.podcasts = []
         self.current_podcast = None
+        self.current_episode = None
 
     def compose(self) -> ComposeResult:
         yield Header(icon="#", show_clock=True, time_format="%I:%M %p")
@@ -264,13 +281,17 @@ class PodcastApp(App):
                     self.current_podcast = p
                     break
 
+            self.current_podcast.get_episode_list()
+
             episode_list = self.query_one(EpisodeList)
             table = episode_list.query_one(DataTable)
             table.clear()
-            table.add_row((self.current_podcast.title, self.current_podcast.url))
+            
+            for e in self.current_podcast.episodes:
+                table.add_row(e.title, e.duration, e.pubdate, key=(e.id, e.url))
         elif triggering_table.id == "EpisodeList":
             pass
-
+            
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark
 
