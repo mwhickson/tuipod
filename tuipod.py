@@ -5,10 +5,11 @@
 #
 
 APPLICATION_NAME = "tuipod"
-APPLICATION_VERSION = "2024-11-12.5c24b1e90d6c4ae28faceec6bbcdff7a"
+APPLICATION_VERSION = "2024-11-18.5c24b1e90d6c4ae28faceec6bbcdff7a"
 
 
 import json
+import miniaudio
 from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Container
@@ -29,9 +30,23 @@ class Episode:
         self.description = description
         self.pubdate = pubdate
         self.duration = duration
+        self.current_position = 0
+        self.source = None
+        self.stream = None
+        self.device = None
 
     def __lt__(self, other):
         return self.title < other.title
+
+    def play_episode(self):
+        self.source = miniaudio.IceCastClient(self.url)
+        self.stream = miniaudio.stream_any(self.source, self.source.audio_format)
+        self.device = miniaudio.PlaybackDevice()
+        self.device.start(self.stream)
+
+    def pause_episode(self):
+        #TODO: something with self.device/self.stream...?
+        pass
 
 
 class Podcast:
@@ -179,7 +194,7 @@ class EpisodeList(Widget):
     """
 
     def compose(self) -> ComposeResult:
-        yield DataTable(id="EpisodeList")
+        yield DataTable(id="EpisodeList", cursor_type="row", zebra_stripes=True)
 
     def on_mount(self):
         table = self.query_one("#EpisodeList")
@@ -264,6 +279,8 @@ class PodcastApp(App):
         if (len(self.podcasts) > 0):
             for podcast in self.podcasts:
                 table.add_row(podcast.title, key=(podcast.id, podcast.url))
+
+            table.focus()
         else:
             table.add_row("no results");
 
@@ -275,7 +292,6 @@ class PodcastApp(App):
 
         if triggering_table.id == "PodcastList":
             podcast_id = event.row_key.value[0]
-            #podcast_url = event.row_key.value[1]
             for p in self.podcasts:
                 if p.id == podcast_id:
                     self.current_podcast = p
@@ -289,8 +305,20 @@ class PodcastApp(App):
             
             for e in self.current_podcast.episodes:
                 table.add_row(e.title, e.duration, e.pubdate, key=(e.id, e.url))
+
+            table.focus()
         elif triggering_table.id == "EpisodeList":
-            pass
+            episode_id = event.row_key.value[0]
+            for e in self.current_podcast.episodes:
+                if e.id == episode_id:
+                    self.current_episode = e
+                    break
+
+            player = self.query_one(PodcastPlayer)
+            player_title = player.query_one("#playerTitleText")
+            player_title.update(e.title)
+
+            e.play_episode()
             
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark
