@@ -8,10 +8,14 @@ APPLICATION_NAME = "tuipod"
 APPLICATION_VERSION = "2024-11-12.5c24b1e90d6c4ae28faceec6bbcdff7a"
 
 
+import json
+from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Container
 from textual.widget import Widget
 from textual.widgets import Button, DataTable, Footer, Header, Input, Label, Static
+import urllib.request
+import urllib.parse
 
 
 class Episode:
@@ -50,9 +54,48 @@ class Player:
 
 class Search:
 
-    def __init__(self, number_results: int, sort_order: str) -> None:
-        self.number_results = number_results
-        self.sort_order = sort_order
+    ENDPOINT = "https://itunes.apple.com/search"
+
+    def __init__(self, search_text: str) -> None:
+        self.search_text = search_text
+        self.cached_results = []
+
+    def get_cached_search_results(self) -> []:
+        return self.cached_results
+
+    def get_search_results(self) -> []:
+        results = []
+
+        data = {}
+        data["media"] = "podcast"
+        data["entity"] = "podcast"
+        data["term"] = self.search_text
+
+        params = urllib.parse.urlencode(data)
+
+        url = self.ENDPOINT + "?" + params
+
+        with urllib.request.urlopen(url) as response:
+            result = response.read()
+            result_object = json.loads(result)
+            if "results" in result_object:
+                for detail in result_object["results"]:
+                    podcast_title = detail["collectionName"]
+                    podcast_url = detail["feedUrl"]
+                    podcast_description = detail["artistName"]
+
+                    results.append(Podcast(podcast_title, podcast_url, podcast_description))
+
+                self.cached_results = results
+
+        return results
+        
+    def search(self, search_text: str) -> []:
+        if (self.search_text == search_text):
+            return self.get_cached_search_results()
+        else:
+            self.search_text = search_text
+            return self.get_search_results()
 
 
 class SearchInput(Widget):
@@ -171,6 +214,10 @@ class PodcastApp(App):
     TITLE = APPLICATION_NAME
     SUB_TITLE = ("version {0}").format(APPLICATION_VERSION)
     
+    def __init__(self):
+        super().__init__()
+        self.searcher = Search("")    
+
     def compose(self) -> ComposeResult:
         yield Header(icon="#", show_clock=True, time_format="%I:%M %p")
 
@@ -178,6 +225,23 @@ class PodcastApp(App):
         yield PodcastList()
         yield EpisodeList()
         yield PodcastPlayer()
+
+    @on(Input.Submitted) 
+    def action_submit(self, event: Input.Submitted) -> None:
+        searchInput = self.query_one("#searchInput")
+        searchTerm = searchInput.value
+
+        results = self.searcher.search(searchTerm)
+
+        podcast_list = self.query_one(PodcastList)
+        table = podcast_list.query_one(DataTable)
+
+        if (len(results) > 0):
+            for r in results:
+                table.add_row([r.title, ""])
+        else:
+            table.add_row("no results", "");
+            pass
 
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark
