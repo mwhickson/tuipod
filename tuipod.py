@@ -11,7 +11,7 @@ APPLICATION_VERSION = "2024-11-12.5c24b1e90d6c4ae28faceec6bbcdff7a"
 from textual.app import App, ComposeResult
 from textual.containers import Container
 from textual.widget import Widget
-from textual.widgets import Footer, Header, Input, Label, Static
+from textual.widgets import Button, DataTable, Footer, Header, Input, Label, Static
 
 
 class Episode:
@@ -59,22 +59,31 @@ class SearchInput(Widget):
 
     DEFAULT_CSS = """
     SearchInput {
-        layout: horizontal;
         height: auto;
+        layout: horizontal;
+        margin: 1 0;
     }
 
-    SearchInput Label {
-        padding: 1;
+    SearchInput Button {
+        border: none !important;
+        padding: 0;
     }
 
-    SearchInput Input {
+    SearchInput #searchLabel {
+        border: none;
+    }
+
+    SearchInput #searchInput {
+        border: none !important;
+        height: 1;
         width: 1fr;
     }
     """
 
     def compose(self) -> ComposeResult:
-        yield Label("Search")
-        yield Input()
+        yield Label("Search", id="searchLabel")
+        yield Input(id="searchInput")
+        yield Button(id="searchButton", label="search") 
 
 
 class PodcastList(Widget):
@@ -86,7 +95,15 @@ class PodcastList(Widget):
     """
 
     def compose(self) -> ComposeResult:
-        yield Static("Podcasts...")
+        yield DataTable(id="PodcastList")
+
+    def on_mount(self):
+        table = self.query_one("#PodcastList")
+
+        columns = ["Podcast Title", "Last Published"]
+
+        for column in columns:
+            table.add_column(column, key=column)
 
 
 class EpisodeList(Widget):
@@ -98,19 +115,51 @@ class EpisodeList(Widget):
     """
 
     def compose(self) -> ComposeResult:
-        yield Static("Episodes...")
+        yield DataTable(id="EpisodeList")
+
+    def on_mount(self):
+        table = self.query_one("#EpisodeList")
+
+        columns = ["Episode Title", "Last Published"]
+
+        for column in columns:
+            table.add_column(column, key=column)
 
 
 class PodcastPlayer(Widget):
 
     DEFAULT_CSS = """
     PodcastPlayer {
+        dock: bottom;
         height: auto;
+        layout: horizontal;
+        margin-top: 1;
+    }
+
+    PodcastPlayer Button {
+        border: none !important;
+        padding: 0;
+    }
+
+    PodcastPlayer #playerPositionText {
+        text-align: right;
+        padding: 0 1;
+        width: 8;
+    }
+
+    PodcastPlayer #playerTitleText {
+        text-align: left;
+        width: 1fr;
     }
     """
 
     def compose(self) -> ComposeResult:
-        yield Static("Player")
+        yield Button(id="backButton", label="back")
+        yield Button(id="playButton", label="play")
+        yield Button(id="forwardButton", label="forward")
+        yield Static("0:00", id="playerPositionText")
+        yield Static("title", id="playerTitleText")
+        yield Button(id="infoButton", label="info")
 
 
 class PodcastApp(App):
@@ -120,20 +169,15 @@ class PodcastApp(App):
         ("q", "quit_application", "Quit application")
     ]
     TITLE = APPLICATION_NAME
-    SUB_TITLE = APPLICATION_VERSION
+    SUB_TITLE = ("version {0}").format(APPLICATION_VERSION)
     
-    def __init__(self) -> None:
-        super().__init__()
-
     def compose(self) -> ComposeResult:
-        yield Header()
+        yield Header(icon="#", show_clock=True, time_format="%I:%M %p")
 
         yield SearchInput()
         yield PodcastList()
         yield EpisodeList()
         yield PodcastPlayer()
-
-        yield Footer()
 
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark
