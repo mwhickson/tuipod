@@ -26,6 +26,9 @@ class Episode:
         self.description = description
         self.duration = duration
 
+    def __lt__(self, other):
+        return self.title < other.title
+
 
 class Podcast:
 
@@ -34,6 +37,9 @@ class Podcast:
         self.url = url
         self.description = description
         self.episodes = []
+
+    def __lt__(self, other):
+        return self.title < other.title
 
     def add_episode(self, episode: Episode) -> None:
         self.episodes.append(episode)
@@ -86,6 +92,7 @@ class Search:
 
                     results.append(Podcast(podcast_title, podcast_url, podcast_description))
 
+                results.sort()            
                 self.cached_results = results
 
         return results
@@ -107,11 +114,6 @@ class SearchInput(Widget):
         margin: 1 0;
     }
 
-    SearchInput Button {
-        border: none !important;
-        padding: 0;
-    }
-
     SearchInput #searchLabel {
         border: none;
     }
@@ -126,34 +128,30 @@ class SearchInput(Widget):
     def compose(self) -> ComposeResult:
         yield Label("Search", id="searchLabel")
         yield Input(id="searchInput")
-        yield Button(id="searchButton", label="search") 
 
 
 class PodcastList(Widget):
 
     DEFAULT_CSS = """
     PodcastList {
-        height: auto;
+        height: 1fr;
     }
     """
 
     def compose(self) -> ComposeResult:
-        yield DataTable(id="PodcastList")
+        yield DataTable(id="PodcastList", cursor_type="row", zebra_stripes=True)
 
     def on_mount(self):
         table = self.query_one("#PodcastList")
-
-        columns = ["Podcast Title", "Last Published"]
-
-        for column in columns:
-            table.add_column(column, key=column)
+        table.add_column("Podcast Title")
+        #table.add_column("Last Published")
 
 
 class EpisodeList(Widget):
 
     DEFAULT_CSS = """
     EpisodeList {
-        height: auto;
+        height: 1fr;
     }
     """
 
@@ -162,11 +160,9 @@ class EpisodeList(Widget):
 
     def on_mount(self):
         table = self.query_one("#EpisodeList")
-
-        columns = ["Episode Title", "Last Published"]
-
-        for column in columns:
-            table.add_column(column, key=column)
+        table.add_column("Episode Title")
+        table.add_column("Duration")
+        table.add_column("Published")
 
 
 class PodcastPlayer(Widget):
@@ -236,11 +232,13 @@ class PodcastApp(App):
         podcast_list = self.query_one(PodcastList)
         table = podcast_list.query_one(DataTable)
 
+        table.clear()
+
         if (len(results) > 0):
-            for r in results:
-                table.add_row([r.title, ""])
+            for podcast in results:
+                table.add_row(podcast.title)
         else:
-            table.add_row("no results", "");
+            table.add_row("no results");
             pass
 
     def action_toggle_dark(self) -> None:
