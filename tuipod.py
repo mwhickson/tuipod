@@ -39,13 +39,15 @@ class Episode:
         return self.title < other.title
 
     def play_episode(self):
-        self.source = miniaudio.IceCastClient(self.url)
-        self.stream = miniaudio.stream_any(self.source, self.source.audio_format)
-        self.device = miniaudio.PlaybackDevice()
-        self.device.start(self.stream)
+        if not self.device is None:
+            self.device.start(self.stream)
+        else:
+            self.source = miniaudio.IceCastClient(self.url)
+            self.stream = miniaudio.stream_any(self.source, self.source.audio_format)
+            self.device = miniaudio.PlaybackDevice()
+            self.device.start(self.stream)
 
     def pause_episode(self):
-        #TODO: something with self.device/self.stream...?
         pass
 
 
