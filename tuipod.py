@@ -16,11 +16,13 @@ from textual.widget import Widget
 from textual.widgets import Button, DataTable, Footer, Header, Input, Label, Static
 import urllib.request
 import urllib.parse
+import uuid
 
 
 class Episode:
 
     def __init__(self, title: str, url: str, description: str, duration: int) -> None:
+        self.id = uuid.uuid4().hex
         self.title = title
         self.url = url
         self.description = description
@@ -33,6 +35,7 @@ class Episode:
 class Podcast:
 
     def __init__(self, title: str, url: str, description: str) -> None:
+        self.id = uuid.uuid4().hex
         self.title = title
         self.url = url
         self.description = description
@@ -49,6 +52,9 @@ class Podcast:
             if e.url == url:
                 self.episodes.remove(e)
                 break
+
+    def get_episode_list(self) -> []:
+        return []
 
 
 class Player:
@@ -86,18 +92,19 @@ class Search:
             result_object = json.loads(result)
             if "results" in result_object:
                 for detail in result_object["results"]:
-                    podcast_title = detail["collectionName"]
-                    podcast_url = detail["feedUrl"]
-                    podcast_description = detail["artistName"]
+                    if "feedUrl" in detail:
+                        podcast_title = detail["collectionName"]
+                        podcast_url = detail["feedUrl"]
+                        podcast_description = detail["artistName"]
 
-                    results.append(Podcast(podcast_title, podcast_url, podcast_description))
+                        results.append(Podcast(podcast_title, podcast_url, podcast_description))
 
                 results.sort()            
                 self.cached_results = results
 
         return results
         
-    def search(self, search_text: str) -> []:
+    async def search(self, search_text: str) -> []:
         if (self.search_text == search_text):
             return self.get_cached_search_results()
         else:
@@ -213,6 +220,8 @@ class PodcastApp(App):
     def __init__(self):
         super().__init__()
         self.searcher = Search("")    
+        self.podcasts = []
+        self.current_podcast = None
 
     def compose(self) -> ComposeResult:
         yield Header(icon="#", show_clock=True, time_format="%I:%M %p")
@@ -223,22 +232,43 @@ class PodcastApp(App):
         yield PodcastPlayer()
 
     @on(Input.Submitted) 
-    def action_submit(self, event: Input.Submitted) -> None:
+    async def action_submit(self, event: Input.Submitted) -> None:
+        podcast_list = self.query_one(PodcastList)
+        table = podcast_list.query_one(DataTable)
+        table.loading = True
+        
         searchInput = self.query_one("#searchInput")
         searchTerm = searchInput.value
 
-        results = self.searcher.search(searchTerm)
-
-        podcast_list = self.query_one(PodcastList)
-        table = podcast_list.query_one(DataTable)
+        self.podcasts = await self.searcher.search(searchTerm)
 
         table.clear()
 
-        if (len(results) > 0):
-            for podcast in results:
-                table.add_row(podcast.title)
+        if (len(self.podcasts) > 0):
+            for podcast in self.podcasts:
+                table.add_row(podcast.title, key=(podcast.id, podcast.url))
         else:
             table.add_row("no results");
+
+        table.loading = False
+
+    @on(DataTable.RowSelected)
+    def action_rowselected(self, event: DataTable.RowSelected) -> None:
+        triggering_table = event.data_table
+
+        if triggering_table.id == "PodcastList":
+            podcast_id = event.row_key.value[0]
+            #podcast_url = event.row_key.value[1]
+            for p in self.podcasts:
+                if p.id == podcast_id:
+                    self.current_podcast = p
+                    break
+
+            episode_list = self.query_one(EpisodeList)
+            table = episode_list.query_one(DataTable)
+            table.clear()
+            table.add_row((self.current_podcast.title, self.current_podcast.url))
+        elif triggering_table.id == "EpisodeList":
             pass
 
     def action_toggle_dark(self) -> None:
