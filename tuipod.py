@@ -9,16 +9,16 @@ APPLICATION_VERSION = "2024-11-18.5c24b1e90d6c4ae28faceec6bbcdff7a"
 
 
 import json
+import urllib.parse
+import urllib.request
+import uuid
+import xml.etree.ElementTree as ET
+
 import miniaudio
 from textual import on
 from textual.app import App, ComposeResult
-from textual.containers import Container
 from textual.widget import Widget
-from textual.widgets import Button, DataTable, Footer, Header, Input, Label, Static
-import urllib.request
-import urllib.parse
-import uuid
-import xml.etree.ElementTree as ET
+from textual.widgets import Button, DataTable, Header, Input, Label, Static
 
 
 class Episode:
@@ -111,10 +111,7 @@ class Search:
     def get_search_results(self) -> []:
         results = []
 
-        data = {}
-        data["media"] = "podcast"
-        data["entity"] = "podcast"
-        data["term"] = self.search_text
+        data = {"media": "podcast", "entity": "podcast", "term": self.search_text}
 
         params = urllib.parse.urlencode(data)
 
@@ -138,7 +135,7 @@ class Search:
         return results
         
     async def search(self, search_text: str) -> []:
-        if (self.search_text == search_text):
+        if self.search_text == search_text:
             return self.get_cached_search_results()
         else:
             self.search_text = search_text
@@ -182,7 +179,7 @@ class PodcastList(Widget):
         yield DataTable(id="PodcastList", cursor_type="row", zebra_stripes=True)
 
     def on_mount(self):
-        table = self.query_one("#PodcastList")
+        table: DataTable = self.query_one("#PodcastList")
         table.add_column("Podcast Title")
         #table.add_column("Last Published")
 
@@ -199,7 +196,7 @@ class EpisodeList(Widget):
         yield DataTable(id="EpisodeList", cursor_type="row", zebra_stripes=True)
 
     def on_mount(self):
-        table = self.query_one("#EpisodeList")
+        table: DataTable = self.query_one("#EpisodeList")
         table.add_column("Episode Title")
         table.add_column("Duration")
         table.add_column("Published")
@@ -248,7 +245,7 @@ class PodcastApp(App):
         ("q", "quit_application", "Quit application")
     ]
     TITLE = APPLICATION_NAME
-    SUB_TITLE = ("version {0}").format(APPLICATION_VERSION)
+    SUB_TITLE = "version {0}".format(APPLICATION_VERSION)
     
     def __init__(self):
         super().__init__()
@@ -271,20 +268,21 @@ class PodcastApp(App):
         table = podcast_list.query_one(DataTable)
         table.loading = True
         
-        searchInput = self.query_one("#searchInput")
-        searchTerm = searchInput.value
+        search_input: Input = event.input
+        search_term = search_input.value
 
-        self.podcasts = await self.searcher.search(searchTerm)
+        self.podcasts = await self.searcher.search(search_term)
 
         table.clear()
 
-        if (len(self.podcasts) > 0):
+        if len(self.podcasts) > 0:
             for podcast in self.podcasts:
+                # key should be string
                 table.add_row(podcast.title, key=(podcast.id, podcast.url))
 
             table.focus()
         else:
-            table.add_row("no results");
+            table.add_row("no results")
 
         table.loading = False
 
@@ -306,6 +304,7 @@ class PodcastApp(App):
             table.clear()
             
             for e in self.current_podcast.episodes:
+                # key should be string
                 table.add_row(e.title, e.duration, e.pubdate, key=(e.id, e.url))
 
             table.focus()
@@ -316,11 +315,11 @@ class PodcastApp(App):
                     self.current_episode = e
                     break
 
-            player = self.query_one(PodcastPlayer)
+            player: PodcastPlayer = self.query_one(PodcastPlayer)
             player_title = player.query_one("#playerTitleText")
-            player_title.update(e.title)
+            player_title.update(self.current_episode.title)
 
-            e.play_episode()
+            self.current_episode.play_episode()
             
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark

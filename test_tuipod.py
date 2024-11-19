@@ -8,7 +8,7 @@
 
 import unittest
 
-from tuipod import Podcast, Episode, Player, Search, PodcastApp
+from tuipod import Podcast, Episode #, Player, Search, PodcastApp
 
 
 TEST_PODCAST_NAME = "A Podcast"
