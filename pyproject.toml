@@ -1,0 +1,35 @@
+[project]
+name = "tuipod"
+version = "2024-11-18.5c24b1e90d6c4ae28faceec6bbcdff7a"
+description = "A TUI podcast player."
+requires-python = ">=3.12"
+readme = "README.md"
+license = "MIT"
+keywords = [
+    "console",
+    "player",
+    "podcast",
+    "terminal",
+    "textual",
+    "tui"
+]
+authors = [
+    { name = "Matthew Hickson" }
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Multimedia :: Sound/Audio :: Players"
+]
+dependencies = [
+    "miniaudio>=1.61",
+    "textual>=0.85.2"
+]
+
+[project.urls]
+Documentation = "https://github.com/mwhickson/tuipod#readme"
+Source = "https://github.com/mwhickson/tuipod"
