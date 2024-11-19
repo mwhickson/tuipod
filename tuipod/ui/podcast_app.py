@@ -2,9 +2,10 @@ import json
 
 from textual import on
 from textual.app import App, ComposeResult
-from textual.widgets import Button, DataTable, Header, Input, Static
+from textual.widgets import Button, DataTable, Header, Input, RichLog, Static
 
 from tuipod.models.search import Search
+from tuipod.ui.episode_info import EpisodeInfoScreen
 from tuipod.ui.episode_list import EpisodeList
 from tuipod.ui.podcast_list import PodcastList
 from tuipod.ui.podcast_player import PodcastPlayer
@@ -15,7 +16,7 @@ APPLICATION_VERSION = "2024-11-18.5c24b1e90d6c4ae28faceec6bbcdff7a"
 
 class PodcastApp(App):
     BINDINGS = [
-        ("space", "action_toggle_play", "Play/Pause"),
+        ("space", "toggle_play", "Play/Pause"),
         ("d", "toggle_dark", "Toggle dark mode"),
         ("i", "display_info", "Display information"),
         ("q", "quit_application", "Quit application")
@@ -63,7 +64,7 @@ class PodcastApp(App):
         table.loading = False
 
     @on(DataTable.RowSelected)
-    def action_rowselected(self, event: DataTable.RowSelected) -> None:
+    def action_row_selected(self, event: DataTable.RowSelected) -> None:
         triggering_table = event.data_table
         row_keys = json.loads(event.row_key.value)
 
@@ -127,8 +128,9 @@ class PodcastApp(App):
                 play_button.label = "pause"
                 player_position.styles.background = "green"
 
+    def action_display_info(self) -> None:
+        if not self.current_episode is None:
+            self.app.push_screen(EpisodeInfoScreen(self.current_episode.title, self.current_episode.url, self.current_episode.description))
+
     def action_quit_application(self) -> None:
         self.exit()
-
-    def key_space(self) -> None:
-        self.action_toggle_play()
