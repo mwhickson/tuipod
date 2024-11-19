@@ -30,9 +30,9 @@ class PodcastPlayer(Widget):
     """
 
     def compose(self) -> ComposeResult:
-        yield Button(id="backButton", label="back")
+        #yield Button(id="backButton", label="back")
         yield Button(id="playButton", label="play")
-        yield Button(id="forwardButton", label="forward")
+        #yield Button(id="forwardButton", label="forward")
         yield Static("0:00", id="playerPositionText")
         yield Static("", id="playerTitleText")
         yield Button(id="infoButton", label="info")

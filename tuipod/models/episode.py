@@ -19,9 +19,13 @@ class Episode:
         self.source = None
         self.stream = None
         self.device = None
+        self.is_playing = False
 
     def __lt__(self, other):
         return self.title < other.title
+
+    def is_playing(self) -> bool:
+        return self.is_playing()
 
     def play_episode(self):
         if not self.device is None:
@@ -32,5 +36,8 @@ class Episode:
             self.device = miniaudio.PlaybackDevice()
             self.device.start(self.stream)
 
+        self.is_playing = True
+
     def stop_episode(self):
         self.device.stop()
+        self.is_playing = False

@@ -2,7 +2,7 @@ import json
 
 from textual import on
 from textual.app import App, ComposeResult
-from textual.widgets import DataTable, Header, Input
+from textual.widgets import Button, DataTable, Header, Input, Static
 
 from tuipod.models.search import Search
 from tuipod.ui.episode_list import EpisodeList
@@ -15,7 +15,9 @@ APPLICATION_VERSION = "2024-11-18.5c24b1e90d6c4ae28faceec6bbcdff7a"
 
 class PodcastApp(App):
     BINDINGS = [
+        ("space", "action_toggle_play", "Play/Pause"),
         ("d", "toggle_dark", "Toggle dark mode"),
+        ("i", "display_info", "Display information"),
         ("q", "quit_application", "Quit application")
     ]
     TITLE = APPLICATION_NAME
@@ -51,9 +53,8 @@ class PodcastApp(App):
 
         if len(self.podcasts) > 0:
             for podcast in self.podcasts:
-                # key should be string
-                rowkey = json.dumps((podcast.id, podcast.url))
-                table.add_row(podcast.title, key=rowkey)
+                row_key = json.dumps((podcast.id, podcast.url))
+                table.add_row(podcast.title, key=row_key)
 
             table.focus()
         else:
@@ -64,10 +65,10 @@ class PodcastApp(App):
     @on(DataTable.RowSelected)
     def action_rowselected(self, event: DataTable.RowSelected) -> None:
         triggering_table = event.data_table
-        rowkeys = json.loads(event.row_key.value)
+        row_keys = json.loads(event.row_key.value)
 
         if triggering_table.id == "PodcastList":
-            podcast_id = rowkeys[0]
+            podcast_id = row_keys[0]
             for p in self.podcasts:
                 if p.id == podcast_id:
                     self.current_podcast = p
@@ -80,31 +81,54 @@ class PodcastApp(App):
             table.clear()
 
             for e in self.current_podcast.episodes:
-                # key should be string
-                rowkey = json.dumps((e.id, e.url))
-                table.add_row(e.title, e.duration, e.pubdate, key=rowkey)
+                row_key = json.dumps((e.id, e.url))
+                table.add_row(e.title, e.duration, e.pubdate, key=row_key)
 
             table.focus()
         elif triggering_table.id == "EpisodeList":
             playing_episode = self.current_episode
 
-            episode_id = rowkeys[0]
+            episode_id = row_keys[0]
             for e in self.current_podcast.episodes:
                 if e.id == episode_id:
                     self.current_episode = e
                     break
 
             player: PodcastPlayer = self.query_one(PodcastPlayer)
-            player_title = player.query_one("#playerTitleText")
+            player_title: Static = player.query_one("#playerTitleText")
             player_title.update(self.current_episode.title)
 
-            if playing_episode:
+            if playing_episode and playing_episode.is_playing:
                 playing_episode.stop_episode()
 
             self.current_episode.play_episode()
 
+            play_button: Button = player.query_one("#playButton")
+            play_button.label = "pause"
+
+            player_position: Static = player.query_one("#playerPositionText")
+            player_position.styles.background = "green"
+
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark
 
+    def action_toggle_play(self) -> None:
+        player: PodcastPlayer = self.query_one(PodcastPlayer)
+        player_position: Static = player.query_one("#playerPositionText")
+        play_button: Button = player.query_one("#playButton")
+
+        if not self.current_episode is None:
+            if self.current_episode.is_playing:
+                self.current_episode.stop_episode()
+                play_button.label = "play"
+                player_position.styles.background = "red"
+            else:
+                self.current_episode.play_episode()
+                play_button.label = "pause"
+                player_position.styles.background = "green"
+
     def action_quit_application(self) -> None:
         self.exit()
+
+    def key_space(self) -> None:
+        self.action_toggle_play()
