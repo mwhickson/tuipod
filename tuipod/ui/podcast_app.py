@@ -1,3 +1,5 @@
+import json
+
 from textual import on
 from textual.app import App, ComposeResult
 from textual.widgets import DataTable, Header, Input
@@ -50,7 +52,8 @@ class PodcastApp(App):
         if len(self.podcasts) > 0:
             for podcast in self.podcasts:
                 # key should be string
-                table.add_row(podcast.title, key=(podcast.id, podcast.url))
+                rowkey = json.dumps((podcast.id, podcast.url))
+                table.add_row(podcast.title, key=rowkey)
 
             table.focus()
         else:
@@ -61,9 +64,10 @@ class PodcastApp(App):
     @on(DataTable.RowSelected)
     def action_rowselected(self, event: DataTable.RowSelected) -> None:
         triggering_table = event.data_table
+        rowkeys = json.loads(event.row_key.value)
 
         if triggering_table.id == "PodcastList":
-            podcast_id = event.row_key.value[0]
+            podcast_id = rowkeys[0]
             for p in self.podcasts:
                 if p.id == podcast_id:
                     self.current_podcast = p
@@ -77,11 +81,14 @@ class PodcastApp(App):
 
             for e in self.current_podcast.episodes:
                 # key should be string
-                table.add_row(e.title, e.duration, e.pubdate, key=(e.id, e.url))
+                rowkey = json.dumps((e.id, e.url))
+                table.add_row(e.title, e.duration, e.pubdate, key=rowkey)
 
             table.focus()
         elif triggering_table.id == "EpisodeList":
-            episode_id = event.row_key.value[0]
+            playing_episode = self.current_episode
+
+            episode_id = rowkeys[0]
             for e in self.current_podcast.episodes:
                 if e.id == episode_id:
                     self.current_episode = e
@@ -90,6 +97,9 @@ class PodcastApp(App):
             player: PodcastPlayer = self.query_one(PodcastPlayer)
             player_title = player.query_one("#playerTitleText")
             player_title.update(self.current_episode.title)
+
+            if playing_episode:
+                playing_episode.stop_episode()
 
             self.current_episode.play_episode()
 

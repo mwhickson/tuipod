@@ -34,5 +34,5 @@ class PodcastPlayer(Widget):
         yield Button(id="playButton", label="play")
         yield Button(id="forwardButton", label="forward")
         yield Static("0:00", id="playerPositionText")
-        yield Static("title", id="playerTitleText")
+        yield Static("", id="playerTitleText")
         yield Button(id="infoButton", label="info")

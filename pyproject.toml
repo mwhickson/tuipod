@@ -26,6 +26,7 @@ classifiers = [
     "Topic :: Multimedia :: Sound/Audio :: Players"
 ]
 dependencies = [
+    #"playsound3>=2.4.0",
     "miniaudio>=1.61",
     "textual>=0.85.2"
 ]

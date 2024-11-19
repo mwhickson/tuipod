@@ -2,6 +2,10 @@ import uuid
 
 import miniaudio
 
+# way better on the dependency front than miniaudio... needs to download file before playing though (and blocks by default)
+# also, doesn't improve the situation re: pause/play or position tracking...
+#import playsound3
+
 class Episode:
 
     def __init__(self, title: str, url: str, description: str, pubdate: str, duration: int) -> None:
@@ -28,5 +32,5 @@ class Episode:
             self.device = miniaudio.PlaybackDevice()
             self.device.start(self.stream)
 
-    def pause_episode(self):
-        pass
+    def stop_episode(self):
+        self.device.stop()
