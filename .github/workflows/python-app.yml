@@ -39,4 +39,4 @@ jobs:
     #    pytest
     - name: Test with unittest
       run: |
-        python -m unittest tests\test_tuipod.py
+        python -m unittest tests/test_tuipod.py
