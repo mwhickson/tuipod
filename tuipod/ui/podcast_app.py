@@ -106,27 +106,27 @@ class PodcastApp(App):
 
             play_button: Button = player.query_one("#playButton")
             play_button.label = "pause"
-
-            player_position: Static = player.query_one("#playerPositionText")
-            player_position.styles.background = "green"
+            play_button.styles.background = "green"
+            play_button.styles.color = "white"
 
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark
 
     def action_toggle_play(self) -> None:
         player: PodcastPlayer = self.query_one(PodcastPlayer)
-        player_position: Static = player.query_one("#playerPositionText")
         play_button: Button = player.query_one("#playButton")
 
         if not self.current_episode is None:
             if self.current_episode.is_playing:
                 self.current_episode.stop_episode()
                 play_button.label = "play"
-                player_position.styles.background = "red"
+                play_button.styles.background = "red"
+                play_button.styles.color = "white"
             else:
                 self.current_episode.play_episode()
                 play_button.label = "pause"
-                player_position.styles.background = "green"
+                play_button.styles.background = "green"
+                play_button.styles.color = "white"
 
     def action_display_info(self) -> None:
         if not self.current_episode is None:

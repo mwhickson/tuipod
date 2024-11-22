@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 import urllib.request
 import uuid
 import xml.etree.ElementTree as ET
@@ -32,11 +33,21 @@ class Podcast:
         episodes = ET.fromstring(result)
         for e in episodes.iter("item"):
             title = e.find("title").text
-            description = e.find("description").text
+
+            raw_description = e.find("description").text
+            soup = BeautifulSoup(raw_description, "html.parser") # I'd change "soup", but I like it...
+            clean_description = soup.get_text()
+            description = clean_description
+
             enclosure = e.find("enclosure")
             url = enclosure.attrib["url"]
+
             pubdate = e.find("pubDate").text
-            duration = 0 #e.find("itunes:duration").text
+
+            duration = 0
+            possible_duration = e.find("itunes:duration")
+            if not possible_duration is None:
+                duration = possible_duration.text
 
             self.episodes.append(Episode(title, url, description, pubdate, duration))
 

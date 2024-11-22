@@ -12,7 +12,10 @@ class SearchInput(Widget):
     }
 
     SearchInput #searchLabel {
+        background: $secondary;
         border: none;
+        color: $background;
+        padding: 0 1;
     }
 
     SearchInput #searchInput {

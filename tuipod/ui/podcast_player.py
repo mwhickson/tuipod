@@ -25,6 +25,7 @@ class PodcastPlayer(Widget):
 
     PodcastPlayer #playerTitleText {
         text-align: left;
+        padding: 0 1;
         width: 1fr;
     }
     """
@@ -33,6 +34,6 @@ class PodcastPlayer(Widget):
         #yield Button(id="backButton", label="back")
         yield Button(id="playButton", label="play")
         #yield Button(id="forwardButton", label="forward")
-        yield Static("0:00", id="playerPositionText")
+        # yield Static("0:00", id="playerPositionText")
         yield Static("", id="playerTitleText")
-        yield Button(id="infoButton", label="info")
+        # yield Button(id="infoButton", label="info")
