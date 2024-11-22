@@ -13,7 +13,7 @@ from tuipod.ui.podcast_player import PodcastPlayer
 from tuipod.ui.search_input import SearchInput
 
 APPLICATION_NAME = "tuipod"
-APPLICATION_VERSION = "2024-11-18.5c24b1e90d6c4ae28faceec6bbcdff7a"
+APPLICATION_VERSION = "2024-11-22.5c24b1e90d6c4ae28faceec6bbcdff7a"
 
 class PodcastApp(App):
     BINDINGS = [

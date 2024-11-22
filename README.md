@@ -4,9 +4,16 @@ A TUI-based Podcast Player
 
 ## Overview
 
-In the neverending quest to find the "perfect" podcast player, I often try to create my own.
+In the never-ending quest to find the "perfect" podcast player, I often try to create my own.
 
 This particular endeavor follows a particularly mediocre experiment using ChatGPT to see how far I could get.
+
+## Features
+
+* discover podcasts through iTunes-based search
+* play podcast episodes directly from source
+* pause podcasts during play
+* *more (still in development)*
 
 ## Screenshots
 
@@ -20,11 +27,7 @@ This implementation utilizes Python and Textual -- but no ChatGPT.
 
 ## TODO
 
-- improve error handling (less likely to outright crash, but still inelegant)
-- improve playback handling (pause/seek/display duration + position/history of played episodes)
-- ~~add info screen displaying either podcast, or episode detail~~
-- add subscription management (with OPML import and export)
-- add episode download option
+*TODO items have been moved to [issues](https://github.com/mwhickson/tuipod/issues)*
 
 ## Reflection
 

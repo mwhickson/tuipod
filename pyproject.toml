@@ -1,6 +1,6 @@
 [project]
 name = "tuipod"
-version = "2024-11-18.5c24b1e90d6c4ae28faceec6bbcdff7a"
+version = "2024-11-22.5c24b1e90d6c4ae28faceec6bbcdff7a"
 description = "A TUI podcast player."
 requires-python = ">=3.12"
 readme = "README.md"
@@ -26,6 +26,7 @@ classifiers = [
     "Topic :: Multimedia :: Sound/Audio :: Players"
 ]
 dependencies = [
+    "beautifulsoup4>=4.12.3",
     #"playsound3>=2.4.0",
     "miniaudio>=1.61",
     "textual>=0.85.2"
@@ -33,4 +34,5 @@ dependencies = [
 
 [project.urls]
 Documentation = "https://github.com/mwhickson/tuipod#readme"
+Issues = "https://github.com/mwhickson/tuipod/issues"
 Source = "https://github.com/mwhickson/tuipod"
