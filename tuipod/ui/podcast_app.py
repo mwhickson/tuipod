@@ -2,11 +2,12 @@ import json
 
 from textual import on
 from textual.app import App, ComposeResult
-from textual.widgets import Button, DataTable, Header, Input, RichLog, Static
+from textual.widgets import Button, DataTable, Header, Input, Static
 
 from tuipod.models.search import Search
 from tuipod.ui.episode_info import EpisodeInfoScreen
 from tuipod.ui.episode_list import EpisodeList
+from tuipod.ui.error_info import ErrorInfoScreen
 from tuipod.ui.podcast_list import PodcastList
 from tuipod.ui.podcast_player import PodcastPlayer
 from tuipod.ui.search_input import SearchInput
@@ -48,18 +49,24 @@ class PodcastApp(App):
         search_input: Input = event.input
         search_term = search_input.value
 
-        self.podcasts = await self.searcher.search(search_term)
+        try:
 
-        table.clear()
+            self.podcasts = await self.searcher.search(search_term)
 
-        if len(self.podcasts) > 0:
-            for podcast in self.podcasts:
-                row_key = json.dumps((podcast.id, podcast.url))
-                table.add_row(podcast.title, key=row_key)
+            table.clear()
 
-            table.focus()
-        else:
-            table.add_row("no results")
+            if len(self.podcasts) > 0:
+                for podcast in self.podcasts:
+                    row_key = json.dumps((podcast.id, podcast.url))
+                    table.add_row(podcast.title, key=row_key)
+
+                table.focus()
+            else:
+                table.add_row("no results")
+
+        except Exception as err:
+            table.add_row("error occurred")
+            self.app.push_screen(ErrorInfoScreen(str(err)))
 
         table.loading = False
 
@@ -68,46 +75,51 @@ class PodcastApp(App):
         triggering_table = event.data_table
         row_keys = json.loads(event.row_key.value)
 
-        if triggering_table.id == "PodcastList":
-            podcast_id = row_keys[0]
-            for p in self.podcasts:
-                if p.id == podcast_id:
-                    self.current_podcast = p
-                    break
+        try:
 
-            self.current_podcast.get_episode_list()
+            if triggering_table.id == "PodcastList":
+                podcast_id = row_keys[0]
+                for p in self.podcasts:
+                    if p.id == podcast_id:
+                        self.current_podcast = p
+                        break
 
-            episode_list = self.query_one(EpisodeList)
-            table = episode_list.query_one(DataTable)
-            table.clear()
+                self.current_podcast.get_episode_list()
 
-            for e in self.current_podcast.episodes:
-                row_key = json.dumps((e.id, e.url))
-                table.add_row(e.title, e.duration, e.pubdate, key=row_key)
+                episode_list = self.query_one(EpisodeList)
+                table = episode_list.query_one(DataTable)
+                table.clear()
 
-            table.focus()
-        elif triggering_table.id == "EpisodeList":
-            playing_episode = self.current_episode
+                for e in self.current_podcast.episodes:
+                    row_key = json.dumps((e.id, e.url))
+                    table.add_row(e.title, e.duration, e.pubdate, key=row_key)
 
-            episode_id = row_keys[0]
-            for e in self.current_podcast.episodes:
-                if e.id == episode_id:
-                    self.current_episode = e
-                    break
+                table.focus()
+            elif triggering_table.id == "EpisodeList":
+                playing_episode = self.current_episode
 
-            player: PodcastPlayer = self.query_one(PodcastPlayer)
-            player_title: Static = player.query_one("#playerTitleText")
-            player_title.update(self.current_episode.title)
+                episode_id = row_keys[0]
+                for e in self.current_podcast.episodes:
+                    if e.id == episode_id:
+                        self.current_episode = e
+                        break
 
-            if playing_episode and playing_episode.is_playing:
-                playing_episode.stop_episode()
+                player: PodcastPlayer = self.query_one(PodcastPlayer)
+                player_title: Static = player.query_one("#playerTitleText")
+                player_title.update(self.current_episode.title)
 
-            self.current_episode.play_episode()
+                if playing_episode and playing_episode.is_playing:
+                    playing_episode.stop_episode()
 
-            play_button: Button = player.query_one("#playButton")
-            play_button.label = "pause"
-            play_button.styles.background = "green"
-            play_button.styles.color = "white"
+                self.current_episode.play_episode()
+
+                play_button: Button = player.query_one("#playButton")
+                play_button.label = "pause"
+                play_button.styles.background = "green"
+                play_button.styles.color = "white"
+
+        except Exception as err:
+            self.app.push_screen(ErrorInfoScreen(str(err)))
 
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark

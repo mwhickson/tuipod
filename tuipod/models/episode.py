@@ -22,7 +22,10 @@ class Episode:
         self.is_playing = False
 
     def __lt__(self, other):
-        return self.title < other.title
+        if self.pubdate != other.pubdate:
+            return self.pubdate < other.pubdate
+        else:
+            return self.title < other.title
 
     def is_playing(self) -> bool:
         return self.is_playing()

@@ -14,11 +14,13 @@ This particular endeavor follows a particularly mediocre experiment using ChatGP
 
 ![tuipod showing episode information](tuipod-episode-info.png)
 
+![tuipod showing error information](tuipod-error-info.png)
+
 This implementation utilizes Python and Textual -- but no ChatGPT.
 
 ## TODO
 
-- improve error handling (still easier to crash than is ideal)
+- improve error handling (less likely to outright crash, but still inelegant)
 - improve playback handling (pause/seek/display duration + position/history of played episodes)
 - ~~add info screen displaying either podcast, or episode detail~~
 - add subscription management (with OPML import and export)

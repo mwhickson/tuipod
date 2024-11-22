@@ -1,16 +1,16 @@
 from textual.app import ComposeResult
 from textual.containers import Container
 from textual.screen import ModalScreen
-from textual.widgets import Button, Link, Markdown, Static
+from textual.widgets import Button, Markdown, Static
 
 
-class EpisodeInfoScreen(ModalScreen):
+class ErrorInfoScreen(ModalScreen):
     BINDINGS = [
         ("escape", "close_modal", "Close modal")
     ]
 
     DEFAULT_CSS = """
-    EpisodeInfoScreen {
+    ErrorInfoScreen {
         align: center middle;
         height: auto;
         width: auto;
@@ -22,8 +22,8 @@ class EpisodeInfoScreen(ModalScreen):
     }
 
     #modalTitle {
-        background: $secondary;
-        color: $background;
+        background: $error-darken-3;
+        color: $foreground;
         dock: top;
         text-align: center;
     }   
@@ -32,17 +32,7 @@ class EpisodeInfoScreen(ModalScreen):
         padding: 1;
     }
     
-    #episodeTitle {
-        padding: 1 2;
-    }
-    
-    #episodeLink {
-        background: $background;
-        color: $secondary;
-        padding: 1 2;
-    }
-    
-    #episodeDetail {
+    #errorDetail {
         padding: 1 0;
         height: 1fr;
     }
@@ -54,25 +44,21 @@ class EpisodeInfoScreen(ModalScreen):
     }
         
     #closeInfoButton {
-        background: $secondary;
+        background: $error-darken-3;
         border: none;
-        color: $background;
+        color: $foreground;
     }
     """
 
-    def __init__(self, title: str, url: str, detail: str) -> None:
+    def __init__(self, detail: str) -> None:
         super().__init__()
-        self.title = title
-        self.url = url
         self.detail = detail
 
     def compose(self) -> ComposeResult:
         yield Container(
-            Static("Episode Information", id="modalTitle"),
+            Static("Error Information", id="modalTitle"),
             Container(
-                Static(self.title, id="episodeTitle"),
-                Link(self.url, id="episodeLink"),
-                Markdown(self.detail, id="episodeDetail"),
+                Markdown(self.detail, id="errorDetail"),
                 id="contentContainer"
             ),
             Container(
