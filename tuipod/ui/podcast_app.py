@@ -1,5 +1,4 @@
 import json
-import uuid
 
 from textual import on
 from textual.app import App, ComposeResult
@@ -100,6 +99,7 @@ class PodcastApp(App):
     async def action_submit(self, event: Input.Submitted) -> None:
         search_input: Input = event.input
         search_term = search_input.value
+        self.notify("searching for: {0}".format(search_term), timeout=3)
         await self._refresh_podcast_list(search_term)
 
     def _set_player_button_status(self, mode: str):
@@ -144,6 +144,8 @@ class PodcastApp(App):
                         break
 
     def _action_podcast_row_selected(self, event: DataTable.RowSelected) -> None:
+        self.notify("getting episodes for: {0}".format(self.current_podcast.title), timeout=3)
+
         episode_list = self.query_one(EpisodeList)
         table = episode_list.query_one(DataTable)
         table.loading = True
@@ -173,6 +175,7 @@ class PodcastApp(App):
             if playing_episode and playing_episode.is_playing:
                 playing_episode.stop_episode()
 
+            self.notify("playing: {0}".format(self.current_episode.title), timeout=3)
             self.current_episode.play_episode()
             self._set_player_button_status("playing")
         except Exception as err:
@@ -200,9 +203,11 @@ class PodcastApp(App):
             if self.current_episode.is_playing:
                 self.current_episode.stop_episode()
                 self._set_player_button_status("paused")
+                self.notify("paused: {0}".format(self.current_episode.title), timeout=3)
             else:
                 self.current_episode.play_episode()
                 self._set_player_button_status("playing")
+                self.notify("playing: {0}".format(self.current_episode.title), timeout=3)
 
     def action_display_about(self) -> None:
         self.app.push_screen(AboutInfoScreen())
@@ -219,9 +224,12 @@ class PodcastApp(App):
             self.subscriptions.add_podcast(self.current_podcast)
             self.subscriptions.persist()
             await self._refresh_podcast_list(self.searcher.search_text)
+            self.notify("subscribed to: {0}".format(self.current_podcast.title), timeout=3)
 
     async def action_unsubscribe_from_podcast(self) -> None:
         if not self.current_podcast is None:
+            title = self.current_podcast.title
             self.subscriptions.remove_podcast(self.current_podcast.url)
             self.subscriptions.persist()
             await self._refresh_podcast_list(self.searcher.search_text)
+            self.notify("unsubscribed from: {0}".format(title), timeout=3)
