@@ -25,11 +25,11 @@ class PodcastApp(App):
         Binding("ctrl+q", "quit_application", "Quit application", priority=True),
 
         # dupes, but lets us avoid the need to CTRL chord keys for the most part (these will be 'undocumented' to avoid confusion re: the conditions necessary for these to work)
-        # TODO: Binding("space", "toggle_play", "Play/Pause"),
+        Binding("space", "toggle_play", "Play/Pause"),
         Binding("d", "toggle_dark", "Toggle dark mode"),
         Binding("i", "display_info", "Display information"),
         Binding("q", "quit_application", "Quit application"),
-        Binding("s", "subscribe_to_podcast", "Subscribe to Podcast")
+        #TODO: Binding("s", "subscribe_to_podcast", "Subscribe to Podcast")
     ]
     TITLE = APPLICATION_NAME
     SUB_TITLE = "version {0}".format(APPLICATION_VERSION)
