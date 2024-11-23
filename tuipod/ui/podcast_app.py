@@ -1,5 +1,7 @@
 import json
 
+from urllib.request import build_opener, install_opener
+
 from textual import on
 from textual.app import App, ComposeResult
 from textual.binding import Binding
@@ -41,6 +43,12 @@ class PodcastApp(App):
         self.podcasts = []
         self.current_podcast = None
         self.current_episode = None
+
+        # REF: https://theorangeone.net/posts/urllib-useragent/#global-opener
+        # NOTE: _opener is not available for import, but it's not necessary (presumably within an app context)
+        opener = build_opener()
+        install_opener(opener)
+        opener.addheaders = [("User-Agent", "Mozilla/9.9 (github.com/mwhickson/tuipod) Chrome/999.9.9.9 Gecko/99990101 Firefox/999 Safari/999.9")]
 
     def compose(self) -> ComposeResult:
         yield Header(icon="#", show_clock=True, time_format="%I:%M %p")
