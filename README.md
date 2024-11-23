@@ -53,7 +53,7 @@ Also provided are batch (`tuipod.bat`) and shell (`tuipod.sh`) files to simplify
 - `ESC` will close a modal window
 - `F1` will show the About dialog 
 - `TAB` and `SHIFT`+`TAB` will move the cursor focus between sections (e.g. search, podcast list, and episode list)
-- `CTRL`+`Q` will quit the application
+- `CTRL`+`C` will quit the application
 - `CTRL`+`P` will show the textual command palette
 - when a podcast is selected:
   - `S` will subscribe to the podcast
@@ -65,6 +65,8 @@ Also provided are batch (`tuipod.bat`) and shell (`tuipod.sh`) files to simplify
 *NOTE: Some keystrokes depend on application state (e.g. not actively searching, episode playing, etc.)*
 
 ## Screenshots
+
+![tuipod about](tuipod-about.png)
 
 ![tuipod playing a podcast](tuipod.png)
 

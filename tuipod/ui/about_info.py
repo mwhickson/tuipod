@@ -65,8 +65,8 @@ Available at [github.com/mwhickson/tuipod](https://github.com/mwhickson/tuipod)
 - `ENTER` - submit a search query, or select a list item
 - `ESC` - close a modal screen
 - `F1` - show this dialog
+- `CTRL` + `C` - quit the application
 - `CTRL` + `P` - show the textual command palette
-- `CTRL` + `Q` - quit the application
 - `D` - toggle dark mode
 - `I` - show episode information
 - `S` - subscribe to highlighted podcast

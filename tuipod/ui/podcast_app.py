@@ -26,15 +26,9 @@ APPLICATION_VERSION = "2024-11-22.5c24b1e90d6c4ae28faceec6bbcdff7a"
 class PodcastApp(App):
     BINDINGS = [
         Binding("f1", "display_about", "Display about information", priority=True),
-
-        # don't let search swallow input (but don't prioritize standard text entry characters to hamper search)
-        Binding("ctrl+q", "quit_application", "Quit application", priority=True),
-
-        # may dupe, but lets us avoid the need to CTRL chord keys for some functions (these will be 'undocumented' to avoid confusion re: the conditions necessary for these to work)
         Binding("space", "toggle_play", "Play/Pause"),
         Binding("d", "toggle_dark", "Toggle dark mode"),
         Binding("i", "display_info", "Display information"),
-        Binding("q", "quit_application", "Quit application"),
         Binding("s", "subscribe_to_podcast", "Subscribe to Podcast"),
         Binding("u", "unsubscribe_from_podcast", "Unsubscribe from Podcast")
     ]
