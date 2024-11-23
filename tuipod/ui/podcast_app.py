@@ -78,7 +78,7 @@ class PodcastApp(App):
             self.podcasts = self.subscriptions.podcasts
             for p in self.subscriptions.podcasts:
                 row_key = json.dumps((p.id, p.url))
-                table.add_row(p.title, key=row_key)
+                table.add_row("SUB", p.title, key=row_key)
 
         if search_term.strip() != "":
             try:
@@ -89,7 +89,8 @@ class PodcastApp(App):
                     for podcast in self.podcasts:
                         row_key = json.dumps((podcast.id, podcast.url))
                         if not row_key in table.rows.keys():
-                            table.add_row(podcast.title, key=row_key)
+                            podcast.subscribed = False
+                            table.add_row("", podcast.title, key=row_key)
 
                     table.focus()
                 else:

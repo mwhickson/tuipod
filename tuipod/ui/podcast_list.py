@@ -15,5 +15,6 @@ class PodcastList(Widget):
 
     def on_mount(self):
         table: DataTable = self.query_one("#PodcastList")
+        table.add_column("Status")
         table.add_column("Podcast Title")
         #table.add_column("Last Published")

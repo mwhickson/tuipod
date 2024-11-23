@@ -12,11 +12,13 @@ class SubscriptionList:
         self.podcasts = []
 
     def add_podcast(self, p: Podcast) -> None:
+        p.subscribed = True
         self.podcasts.append(p)
 
     def remove_podcast(self, url: str) -> None:
         for p in self.podcasts:
             if p.url == url:
+                p.subscribed = False
                 self.podcasts.remove(p)
                 break
 
@@ -34,7 +36,9 @@ class SubscriptionList:
                 title = item.get("text")
                 url = item.get("xmlUrl")
                 if not title is None and not url is None:
-                    self.add_podcast(Podcast(title, url, ""))
+                    p = Podcast(title, url, "")
+                    p.subscribed = True
+                    self.add_podcast(p)
 
     def persist(self) -> None:
         with open(self.SUBSCRIPTION_FILE, "wt", encoding="utf-8") as subscription_file:

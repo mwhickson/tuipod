@@ -13,6 +13,7 @@ class Podcast:
         self.url = url
         self.description = description
         self.episodes = []
+        self.subscribed = False
 
     def __lt__(self, other):
         return self.title < other.title
