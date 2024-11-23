@@ -2,9 +2,11 @@ import json
 
 from textual import on
 from textual.app import App, ComposeResult
+from textual.binding import Binding
 from textual.widgets import Button, DataTable, Header, Input, Static
 
 from tuipod.models.search import Search
+from tuipod.ui.about_info import AboutInfoScreen
 from tuipod.ui.episode_info import EpisodeInfoScreen
 from tuipod.ui.episode_list import EpisodeList
 from tuipod.ui.error_info import ErrorInfoScreen
@@ -17,10 +19,17 @@ APPLICATION_VERSION = "2024-11-22.5c24b1e90d6c4ae28faceec6bbcdff7a"
 
 class PodcastApp(App):
     BINDINGS = [
-        ("space", "toggle_play", "Play/Pause"),
-        ("d", "toggle_dark", "Toggle dark mode"),
-        ("i", "display_info", "Display information"),
-        ("q", "quit_application", "Quit application")
+        Binding("f1", "display_about", "Display about information", priority=True),
+
+        # don't let search swallow input (but don't prioritize standard text entry characters to hamper search)
+        Binding("ctrl+q", "quit_application", "Quit application", priority=True),
+
+        # dupes, but lets us avoid the need to CTRL chord keys for the most part (these will be 'undocumented' to avoid confusion re: the conditions necessary for these to work)
+        # TODO: Binding("space", "toggle_play", "Play/Pause"),
+        Binding("d", "toggle_dark", "Toggle dark mode"),
+        Binding("i", "display_info", "Display information"),
+        Binding("q", "quit_application", "Quit application"),
+        Binding("s", "subscribe_to_podcast", "Subscribe to Podcast")
     ]
     TITLE = APPLICATION_NAME
     SUB_TITLE = "version {0}".format(APPLICATION_VERSION)
@@ -140,9 +149,15 @@ class PodcastApp(App):
                 play_button.styles.background = "green"
                 play_button.styles.color = "white"
 
+    def action_display_about(self) -> None:
+        self.app.push_screen(AboutInfoScreen())
+
     def action_display_info(self) -> None:
         if not self.current_episode is None:
             self.app.push_screen(EpisodeInfoScreen(self.current_episode.title, self.current_episode.url, self.current_episode.description))
 
     def action_quit_application(self) -> None:
         self.exit()
+
+    # def action_subscribe_to_podcast(self) -> None:
+    #     pass

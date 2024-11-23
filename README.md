@@ -12,21 +12,23 @@ This implementation utilizes Python and Textual -- but no ChatGPT.
 
 ## Features
 
-* discover podcasts through iTunes-based search
-* play podcast episodes directly from source
-* pause podcasts during play
-* *more (still in development)*
+- discover podcasts through iTunes-based search
+- play podcast episodes directly from source
+- pause podcasts during play
+- *more (still in development)*
 
 ## Installation and Running
 
 You must:
 
-* have Python installed
-* have `pip` installed (if not included with Python)
-* Use:
-  * a virtual environment 
-  * or, install Python modules from your environment (e.g. apt repository) 
-  * or, use `--break-system-packages`
+- have Python installed
+- have `pip` installed (if not included with Python)
+- Use:
+  - a virtual environment 
+  - or, install Python modules from your environment (e.g. apt repository) 
+  - or, use `--break-system-packages`
+
+*If you are using Windows, you may need the **Visual Studio Build Tools** to build `miniaudio` during the `pip` install.*
 
 ```bash
 $ git clone https://github.com/mwhickson/tuipod.git
@@ -38,24 +40,25 @@ Also provided are batch (`tuipod.bat`) and shell (`tuipod.sh`) files to simplify
 
 ## Usage Guide
 
-* type search criteria into the search box and press `ENTER` to fetch and display podcast results
-  * if no errors occur and podcast results are found, focus will automatically shift to podcast list
-* select a podcast item of interest and press `ENTER` to fetch and display a list of episodes for the selected podcast
-  * if no errors occur and episode results are found, focus will automatically shift to the episode list
-* select an episode item of interest and press `ENTER` to begin playing the episode
-  * if no errors occur, the episode will being playing (the `play` button text will change to `pause` and the button will become green)
+- type search criteria into the search box and press `ENTER` to fetch and display podcast results
+  - if no errors occur and podcast results are found, focus will automatically shift to podcast list
+- select a podcast item of interest and press `ENTER` to fetch and display a list of episodes for the selected podcast
+  - if no errors occur and episode results are found, focus will automatically shift to the episode list
+- select an episode item of interest and press `ENTER` to begin playing the episode
+  - if no errors occur, the episode will being playing (the `play` button text will change to `pause` and the button will become green)
 
 ### Additional keyboard shortcuts:
 
-* `TAB` and `SHIFT`+`TAB` will move the cursor focus between sections (e.g. search, podcast list, and episode list)
-* while not focused on the search input:
-  * `q` will quit the application
-  * `CTRL`+`p` will show the textual command palette
-  * when an episode is selected:
-    * `SPACE` will toggle between playing and paused
-    * `i` will show the episode information
-* when a modal screen (episode information/error information) is displayed:
-  * `ESC` will close the window
+- `ESC` will close a modal window
+- `F1` will show the About dialog 
+- `TAB` and `SHIFT`+`TAB` will move the cursor focus between sections (e.g. search, podcast list, and episode list)
+- `CTRL`+`Q` will quit the application
+- `CTRL`+`P` will show the textual command palette
+- when an episode is selected:
+  - `I` will show the episode information
+  - `SPACE` will toggle between episode playing/paused state
+
+*NOTE: Some keystrokes depend on application state (e.g. not actively searching, episode playing, etc.)*
 
 ## Screenshots
 

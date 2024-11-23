@@ -1,7 +1,7 @@
 from textual.app import ComposeResult
 from textual.containers import Container
 from textual.screen import ModalScreen
-from textual.widgets import Button, Markdown, Static
+from textual.widgets import Button, MarkdownViewer, Static
 
 
 class ErrorInfoScreen(ModalScreen):
@@ -58,7 +58,7 @@ class ErrorInfoScreen(ModalScreen):
         yield Container(
             Static("Error Information", id="modalTitle"),
             Container(
-                Markdown(self.detail, id="errorDetail"),
+                MarkdownViewer(id="errorDetail", markdown=self.detail, show_table_of_contents=False),
                 id="contentContainer"
             ),
             Container(

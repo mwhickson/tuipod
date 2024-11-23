@@ -1,7 +1,7 @@
 from textual.app import ComposeResult
 from textual.containers import Container
 from textual.screen import ModalScreen
-from textual.widgets import Button, Link, Markdown, Static
+from textual.widgets import Button, Link, MarkdownViewer, Static
 
 
 class EpisodeInfoScreen(ModalScreen):
@@ -72,7 +72,7 @@ class EpisodeInfoScreen(ModalScreen):
             Container(
                 Static(self.title, id="episodeTitle"),
                 Link(self.url, id="episodeLink"),
-                Markdown(self.detail, id="episodeDetail"),
+                MarkdownViewer(id="episodeDetail", markdown=self.detail, show_table_of_contents=False),
                 id="contentContainer"
             ),
             Container(
