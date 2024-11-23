@@ -28,7 +28,9 @@ class Podcast:
                 break
 
     def get_episode_list(self) -> []:
-        with urllib.request.urlopen(self.url) as response:
+        req = urllib.request.Request(self.url)
+        req.add_header("User-Agent", "Mozilla/9.9 (github.com/mwhickson/tuipod) Chrome/999.9.9.9 Gecko/99990101 Firefox/999 Safari/999.9")
+        with urllib.request.urlopen(req) as response:
             result = response.read()
 
         episodes = ET.fromstring(result)
