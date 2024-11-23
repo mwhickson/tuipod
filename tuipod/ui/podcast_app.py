@@ -149,13 +149,13 @@ class PodcastApp(App):
                         break
 
     def _action_podcast_row_selected(self, event: DataTable.RowSelected) -> None:
+        episode_list = self.query_one(EpisodeList)
+        table = episode_list.query_one(DataTable)
+        table.loading = True
+        table.clear()
+
         try:
             self.current_podcast.get_episode_list()
-
-            episode_list = self.query_one(EpisodeList)
-            table = episode_list.query_one(DataTable)
-            table.loading = True
-            table.clear()
 
             for e in self.current_podcast.episodes:
                 row_key = json.dumps((e.id, e.url))
