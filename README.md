@@ -15,6 +15,7 @@ This implementation utilizes Python and Textual -- but no ChatGPT.
 - discover podcasts through iTunes-based search
 - play podcast episodes directly from source
 - pause podcasts during play
+- maintain a podcast subscription list
 - *more (still in development)*
 
 ## Installation and Running
@@ -54,6 +55,9 @@ Also provided are batch (`tuipod.bat`) and shell (`tuipod.sh`) files to simplify
 - `TAB` and `SHIFT`+`TAB` will move the cursor focus between sections (e.g. search, podcast list, and episode list)
 - `CTRL`+`Q` will quit the application
 - `CTRL`+`P` will show the textual command palette
+- when a podcast is selected:
+  - `S` will subscribe to the podcast
+  - `U` will unsubscribe from the podcast
 - when an episode is selected:
   - `I` will show the episode information
   - `SPACE` will toggle between episode playing/paused state

@@ -69,6 +69,8 @@ Available at [github.com/mwhickson/tuipod](https://github.com/mwhickson/tuipod)
 - `CTRL` + `Q` - quit the application
 - `D` - toggle dark mode
 - `I` - show episode information
+- `S` - subscribe to highlighted podcast
+- `U` - unsubscribe from highlighted podcast
 - `SPACE` - play/pause an episode after selection
 - `TAB` / `SHIFT` + `TAB` - move cursor from section to section
 
