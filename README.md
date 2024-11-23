@@ -6,7 +6,9 @@ A TUI-based Podcast Player
 
 In the never-ending quest to find the "perfect" podcast player, I often try to create my own.
 
-This particular endeavor follows a particularly mediocre experiment using ChatGPT to see how far I could get.
+This particular endeavor follows a particularly mediocre experiment using ChatGPT to see how far towards a functional application I could get.
+
+This implementation utilizes Python and Textual -- but no ChatGPT.
 
 ## Features
 
@@ -14,6 +16,46 @@ This particular endeavor follows a particularly mediocre experiment using ChatGP
 * play podcast episodes directly from source
 * pause podcasts during play
 * *more (still in development)*
+
+## Installation and Running
+
+You must:
+
+* have Python installed
+* have `pip` installed (if not included with Python)
+* Use:
+  * a virtual environment 
+  * or, install Python modules from your environment (e.g. apt repository) 
+  * or, use `--break-system-packages`
+
+```bash
+$ git clone https://github.com/mwhickson/tuipod.git
+$ pip install -r requirements.txt
+$ python -m tuipod
+```
+
+Also provided are batch (`tuipod.bat`) and shell (`tuipod.sh`) files to simplify calling `python -m tuipod`.  
+
+## Usage Guide
+
+* type search criteria into the search box and press `ENTER` to fetch and display podcast results
+  * if no errors occur and podcast results are found, focus will automatically shift to podcast list
+* select a podcast item of interest and press `ENTER` to fetch and display a list of episodes for the selected podcast
+  * if no errors occur and episode results are found, focus will automatically shift to the episode list
+* select an episode item of interest and press `ENTER` to begin playing the episode
+  * if no errors occur, the episode will being playing (the `play` button text will change to `pause` and the button will become green)
+
+### Additional keyboard shortcuts:
+
+* `TAB` and `SHIFT`+`TAB` will move the cursor focus between sections (e.g. search, podcast list, and episode list)
+* while not focused on the search input:
+  * `q` will quit the application
+  * `CTRL`+`p` will show the textual command palette
+  * when an episode is selected:
+    * `SPACE` will toggle between playing and paused
+    * `i` will show the episode information
+* when a modal screen (episode information/error information) is displayed:
+  * `ESC` will close the window
 
 ## Screenshots
 
@@ -23,11 +65,9 @@ This particular endeavor follows a particularly mediocre experiment using ChatGP
 
 ![tuipod showing error information](tuipod-error-info.png)
 
-This implementation utilizes Python and Textual -- but no ChatGPT.
+### Linux Screenshot
 
-## TODO
-
-*TODO items have been moved to [issues](https://github.com/mwhickson/tuipod/issues)*
+![tuipod running on Linux (Ubuntu via WSL)](tuipod-linux-ubuntu-wsl.png)
 
 ## Reflection
 
@@ -39,7 +79,7 @@ During development of tuipod, I purposely did not reference the ChatGPT player c
 - given the state of some of the documentation for the projects used, ChatGPT's implementation is, in hindsight, more impressive
 - I got what I wanted with the manual approach, and will be able to more easily update and refine what I have, which is not something I can say about the ChatGPT product
 
-Overall, much happier with the manual implementation of tuipod.
+Overall, I am much happier with the manual implementation of tuipod.
 
 ## License
 
