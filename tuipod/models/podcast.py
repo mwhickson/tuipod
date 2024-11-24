@@ -35,21 +35,26 @@ class Podcast:
         for e in episodes.iter("item"):
             title = e.find("title").text
 
-            raw_description = e.find("description").text
-            soup = BeautifulSoup(raw_description, "html.parser") # I'd change "soup", but I like it...
-            clean_description = soup.get_text()
-            description = clean_description
-
             enclosure = e.find("enclosure")
-            url = enclosure.attrib["url"]
+            if not enclosure is None:
+                url = enclosure.attrib["url"]
 
-            pubdate = e.find("pubDate").text
+                raw_description = e.find("description").text
+                if not raw_description is None:
+                    soup = BeautifulSoup(raw_description, "html.parser") # I'd change "soup", but I like it...
+                    clean_description = soup.get_text()
+                    description = clean_description
+                else:
+                    description = ""
 
-            duration = 0
-            possible_duration = e.find("itunes:duration")
-            if not possible_duration is None:
-                duration = possible_duration.text
+                pubdate = e.find("pubDate").text
 
-            self.episodes.append(Episode(title, url, description, pubdate, duration))
+                duration = 0
+                possible_duration = e.find("itunes:duration")
+                if not possible_duration is None:
+                    duration = possible_duration.text
+
+                if not url is None:
+                    self.episodes.append(Episode(title, url, description, pubdate, duration))
 
         return self.episodes
