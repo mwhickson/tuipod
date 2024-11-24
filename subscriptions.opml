@@ -2,28 +2,6 @@
 <opml version="1.0">
 <body>
 <outline text="feeds">
-<outline text="3d6 Down The Line" xmlUrl="https://anchor.fm/s/815abb18/podcast/rss" type="rss" />
-<outline text="Adventures in Lollygagging" xmlUrl="https://feeds.transistor.fm/adventures-in-lollygagging-4b1c91f1-9282-46d3-84ab-10ac9187ea0a" type="rss" />
-<outline text="Burn Everything Gaming: Fate RPG" xmlUrl="https://BurnEverythingGaming.podbean.com/feed.xml" type="rss" />
-<outline text="Case Closed! (old time radio)" xmlUrl="http://feeds.feedburner.com/caseclosed" type="rss" />
-<outline text="Classical Music Discoveries" xmlUrl="http://khedgecock.podomatic.com/rss2.xml" type="rss" />
-<outline text="Coder Radio" xmlUrl="https://coder.show/rss" type="rss" />
-<outline text="Coding Blocks" xmlUrl="https://www.codingblocks.net/podcast-feed.xml" type="rss" />
-<outline text="Decoder Ring Theatre" xmlUrl="https://decoderring.libsyn.com/rss" type="rss" />
-<outline text="Essential NPCs" xmlUrl="http://feeds.soundcloud.com/users/soundcloud:users:193629322/sounds.rss" type="rss" />
-<outline text="Fandible Actual Play Podcast" xmlUrl="https://www.fandible.com/?feed=podcast" type="rss" />
-<outline text="King Falls AM" xmlUrl="https://audioboom.com/channels/4256036.rss" type="rss" />
-<outline text="Open Metalcast" xmlUrl="http://feeds.feedburner.com/OpenMetalcast" type="rss" />
-<outline text="Relic Radio Sci-Fi (old time radio)" xmlUrl="http://feeds.feedburner.com/relicradiosciencefiction" type="rss" />
-<outline text="Relic Radio Thrillers (Old Time Radio)" xmlUrl="http://feeds.feedburner.com/relicradiothrillers" type="rss" />
-<outline text="Spout Lore" xmlUrl="https://feeds.megaphone.fm/spoutlore" type="rss" />
-<outline text="Strange Tales (Old Time Radio)" xmlUrl="http://feeds.feedburner.com/relicradiostrangetales" type="rss" />
-<outline text="Sunday-Skypers" xmlUrl="https://sunday-skypers.podbean.com/feed.xml" type="rss" />
-<outline text="The Arcology Shadowrun Community Podcast" xmlUrl="http://arcologypodcast.libsyn.com/rss" type="rss" />
-<outline text="The Film Reroll" xmlUrl="http://www.filmreroll.com/?feed=podcast" type="rss" />
-<outline text="The Horror! (Old Time Radio)" xmlUrl="http://feeds.feedburner.com/horror" type="rss" />
-<outline text="The Mysterious Old Radio Listening Society" xmlUrl="http://www.ghoulishdelights.com/feed/podcast/themorls" type="rss" />
-<outline text="Tower 4" xmlUrl="https://feeds.megaphone.fm/BDA6615576404" type="rss" />
 </outline>
 </body>
 </opml>
