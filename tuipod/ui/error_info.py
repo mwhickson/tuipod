@@ -5,6 +5,10 @@ from textual.widgets import Button, MarkdownViewer, Static
 
 
 class ErrorInfoScreen(ModalScreen):
+    """
+    A generic error display modal screen for tuipod.
+    """
+
     BINDINGS = [
         ("escape", "close_modal", "Close modal")
     ]
@@ -51,10 +55,12 @@ class ErrorInfoScreen(ModalScreen):
     """
 
     def __init__(self, detail: str) -> None:
+        """initialize the error screen"""
         super().__init__()
         self.detail = detail
 
     def compose(self) -> ComposeResult:
+        """build the error screen"""
         yield Container(
             Static("Error Information", id="modalTitle"),
             Container(
@@ -69,8 +75,10 @@ class ErrorInfoScreen(ModalScreen):
         )
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
+        """handle button presses (currently just the close button)"""
         if event.button.id == "closeInfoButton":
             self.app.pop_screen()
 
     def action_close_modal(self) -> None:
+        """close the modal"""
         self.app.pop_screen()

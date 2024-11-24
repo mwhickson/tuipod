@@ -27,6 +27,10 @@ APPLICATION_NAME = "tuipod"
 APPLICATION_VERSION = "2024-11-24.6147baed9d02462989c1d8cc65b87af5-beta"
 
 class PodcastApp(App):
+    """
+    A podcast player application (tuipod) utilizing textual.
+    """
+
     BINDINGS = [
         Binding("f1", "display_about", "Display about information", priority=True),
         Binding("space", "toggle_play", "Play/Pause"),
@@ -39,6 +43,11 @@ class PodcastApp(App):
     SUB_TITLE = "version {0}".format(APPLICATION_VERSION)
 
     def __init__(self):
+        """
+        initialize the application
+
+        NOTE: sets a User-Agent override for urllib.openurl(), and multimedia key support.
+        """
         super().__init__()
         self.searcher = Search("")
         self.subscriptions = SubscriptionList()
@@ -57,6 +66,7 @@ class PodcastApp(App):
         self.keylistener.start()
 
     def compose(self) -> ComposeResult:
+        """build the app"""
         yield Header(icon="#", show_clock=True, time_format="%I:%M %p")
 
         yield SearchInput()
@@ -65,11 +75,13 @@ class PodcastApp(App):
         yield PodcastPlayer()
 
     async def on_mount(self) -> None:
+        """set up application, including listing current subscriptions"""
         self.subscriptions.retrieve()
         if len(self.subscriptions.podcasts) > 0:
             await self._refresh_podcast_list("")
 
     async def _refresh_podcast_list(self, search_term: str) -> None:
+        """refresh the podcast list, subscriptions first then search results"""
         podcast_list = self.query_one(PodcastList)
         episode_list = self.query_one(EpisodeList)
 
@@ -111,12 +123,14 @@ class PodcastApp(App):
 
     @on(Input.Submitted)
     async def action_submit(self, event: Input.Submitted) -> None:
+        """perform the search for the criteria entered in the search widget"""
         search_input: Input = event.input
         search_term = search_input.value
         self.notify("searching for: {0}".format(search_term), timeout=3)
         await self._refresh_podcast_list(search_term)
 
     def _set_player_button_status(self, mode: str):
+        """set the visual status of the play button in the podcast player widget"""
         player: PodcastPlayer = self.query_one(PodcastPlayer)
         play_button: Button = player.query_one("#playButton")
 
@@ -134,6 +148,7 @@ class PodcastApp(App):
             play_button.styles.color = "white"
 
     def _action_podcast_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        """keep track of the highlighted podcast row for easy reference"""
         k = event.row_key
         if not k is None:
             v = k.value
@@ -146,6 +161,7 @@ class PodcastApp(App):
                         break
 
     def _action_episode_row_highlighted(self, event: DataTable.RowSelected) -> None:
+        """keep track of the highlighted episode row for easy reference"""
         k = event.row_key
         if not k is None:
             v = k.value
@@ -158,6 +174,7 @@ class PodcastApp(App):
                         break
 
     def _action_podcast_row_selected(self, event: DataTable.RowSelected) -> None:
+        """select the currently highlighted podcast, and retrieve its episode list"""
         self.notify("getting episodes for: {0}".format(self.current_podcast.title), timeout=3)
 
         episode_list = self.query_one(EpisodeList)
@@ -179,6 +196,7 @@ class PodcastApp(App):
         table.loading = False
 
     def _action_episode_row_selected(self, event: DataTable.RowSelected) -> None:
+        """select the currently highlighted episode, and begin playing the episode"""
         try:
             playing_episode = self.current_episode
 
@@ -197,6 +215,7 @@ class PodcastApp(App):
 
     @on(DataTable.RowHighlighted)
     def action_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        """general row highlighting handler"""
         if event.data_table.id == "PodcastList":
             self._action_podcast_row_highlighted(event)
         elif event.data_table.id == "EpisodeList":
@@ -204,15 +223,18 @@ class PodcastApp(App):
 
     @on(DataTable.RowSelected)
     def action_row_selected(self, event: DataTable.RowSelected) -> None:
+        """general row selection handler"""
         if event.data_table.id == "PodcastList":
             self._action_podcast_row_selected(event)
         elif event.data_table.id == "EpisodeList":
             self._action_episode_row_selected(event)
 
     def action_toggle_dark(self) -> None:
+        """toggle between dark and light themes"""
         self.dark = not self.dark
 
     def action_toggle_play(self) -> None:
+        """toggle between playing or pausing an active episode"""
         if not self.current_episode is None:
             if self.current_episode.is_playing:
                 self.current_episode.stop_episode()
@@ -224,16 +246,20 @@ class PodcastApp(App):
                 self.notify("playing: {0}".format(self.current_episode.title), timeout=3)
 
     def action_display_about(self) -> None:
+        """display the about/help screen"""
         self.app.push_screen(AboutInfoScreen())
 
     def action_display_info(self) -> None:
+        """display the episode information screen for the active podcast"""
         if not self.current_episode is None:
             self.app.push_screen(EpisodeInfoScreen(self.current_episode.title, self.current_episode.url, self.current_episode.description))
 
     def action_quit_application(self) -> None:
+        """quit the application"""
         self.exit()
 
     async def action_subscribe_to_podcast(self) -> None:
+        """record the subscription of the active podcast"""
         if not self.current_podcast is None:
             self.subscriptions.add_podcast(self.current_podcast)
             self.subscriptions.persist()
@@ -241,6 +267,7 @@ class PodcastApp(App):
             self.notify("subscribed to: {0}".format(self.current_podcast.title), timeout=3)
 
     async def action_unsubscribe_from_podcast(self) -> None:
+        """remove (and thus unsubscribe) from the active podcast"""
         if not self.current_podcast is None:
             title = self.current_podcast.title
             self.subscriptions.remove_podcast(self.current_podcast.url)
@@ -249,5 +276,6 @@ class PodcastApp(App):
             self.notify("unsubscribed from: {0}".format(title), timeout=3)
 
     def on_listen_keys(self, key) -> None:
+        """listen for the media play/pause keypress to complete"""
         if key == keyboard.Key.media_play_pause:
             self.action_toggle_play()

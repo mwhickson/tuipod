@@ -5,6 +5,10 @@ from textual.widgets import Button, MarkdownViewer, Static
 
 
 class AboutInfoScreen(ModalScreen):
+    """
+    An about/help modal screen for tuipod.
+    """
+
     BINDINGS = [
         ("escape", "close_modal", "Close modal")
     ]
@@ -77,13 +81,13 @@ Available at [github.com/mwhickson/tuipod](https://github.com/mwhickson/tuipod)
 NOTE: Some keystrokes depend on application state (e.g. not actively searching, episode playing, etc.)
 """
 
-# TODO: - `S` - subscribe to the current podcast
-
     def __init__(self) -> None:
+        """initialize the about/help screen"""
         super().__init__()
         self.detail = self.ABOUT_INFO
 
     def compose(self) -> ComposeResult:
+        """build the about/help screen"""
         yield Container(
             Static("About", id="modalTitle"),
             Container(
@@ -98,8 +102,10 @@ NOTE: Some keystrokes depend on application state (e.g. not actively searching, 
         )
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
+        """handle button presses (currently just the close button)"""
         if event.button.id == "closeInfoButton":
             self.app.pop_screen()
 
     def action_close_modal(self) -> None:
+        """close the modal"""
         self.app.pop_screen()

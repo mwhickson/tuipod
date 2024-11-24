@@ -5,17 +5,23 @@ import xml.sax.saxutils as saxu
 from tuipod.models.podcast import Podcast
 
 class SubscriptionList:
+    """
+    A simple subscription list saved/loaded from a fixed OPML file (subscriptions.opml).
+    """
 
     SUBSCRIPTION_FILE = "subscriptions.opml"
 
     def __init__(self) -> None:
+        """initialize the subscription list"""
         self.podcasts = []
 
     def add_podcast(self, p: Podcast) -> None:
+        """add a podcast subscription"""
         p.subscribed = True
         self.podcasts.append(p)
 
     def remove_podcast(self, url: str) -> None:
+        """remove a subscribed podcast by URL"""
         for p in self.podcasts:
             if p.url == url:
                 p.subscribed = False
@@ -23,6 +29,7 @@ class SubscriptionList:
                 break
 
     def retrieve(self) -> []:
+        """load subscriptions from disk (if the subscription file exists)"""
         self.podcasts = []
 
         if exists(self.SUBSCRIPTION_FILE):
@@ -41,6 +48,7 @@ class SubscriptionList:
                     self.add_podcast(p)
 
     def persist(self) -> None:
+        """save the current subscription list to disk"""
         with open(self.SUBSCRIPTION_FILE, "wt", encoding="utf-8") as subscription_file:
             lines = []
             lines.append('<?xml version="1.0" encoding="utf-8" standalone="no"?>\n')

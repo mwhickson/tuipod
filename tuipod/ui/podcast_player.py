@@ -3,6 +3,9 @@ from textual.widget import Widget
 from textual.widgets import Button, Static
 
 class PodcastPlayer(Widget):
+    """
+    A super simple player widget for podcast episode playback interaction.
+    """
 
     DEFAULT_CSS = """
     PodcastPlayer {
@@ -31,6 +34,12 @@ class PodcastPlayer(Widget):
     """
 
     def compose(self) -> ComposeResult:
+        """
+        build the widget
+
+        TODO: so very much...
+        """
+
         #yield Button(id="backButton", label="back")
         yield Button(id="playButton", label="play")
         #yield Button(id="forwardButton", label="forward")

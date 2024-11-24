@@ -3,6 +3,9 @@ from textual.widget import Widget
 from textual.widgets import Input, Label
 
 class SearchInput(Widget):
+    """
+    A simple, but effective search widget for discovering podcasts by search text."
+    """
 
     DEFAULT_CSS = """
     SearchInput {
@@ -26,5 +29,6 @@ class SearchInput(Widget):
     """
 
     def compose(self) -> ComposeResult:
+        """build the widget"""
         yield Label("Search", id="searchLabel")
         yield Input(id="searchInput")

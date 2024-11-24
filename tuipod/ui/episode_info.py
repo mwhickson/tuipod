@@ -5,6 +5,10 @@ from textual.widgets import Button, Link, MarkdownViewer, Static
 
 
 class EpisodeInfoScreen(ModalScreen):
+    """
+    An episode information modal screen for tuipod.
+    """
+
     BINDINGS = [
         ("escape", "close_modal", "Close modal")
     ]
@@ -61,12 +65,14 @@ class EpisodeInfoScreen(ModalScreen):
     """
 
     def __init__(self, title: str, url: str, detail: str) -> None:
+        """initialize the episode information screen"""
         super().__init__()
         self.title = title
         self.url = url
         self.detail = detail
 
     def compose(self) -> ComposeResult:
+        """build the episode information screen"""
         yield Container(
             Static("Episode Information", id="modalTitle"),
             Container(
@@ -83,8 +89,10 @@ class EpisodeInfoScreen(ModalScreen):
         )
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
+        """handle button presses (currently just the close button)"""
         if event.button.id == "closeInfoButton":
             self.app.pop_screen()
 
     def action_close_modal(self) -> None:
+        """close the modal"""
         self.app.pop_screen()
