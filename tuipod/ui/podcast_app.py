@@ -22,7 +22,7 @@ from tuipod.ui.search_input import SearchInput
 # logging.basicConfig(filename="debug.log", filemode="w", level="NOTSET")
 
 APPLICATION_NAME = "tuipod"
-APPLICATION_VERSION = "2024-11-22.5c24b1e90d6c4ae28faceec6bbcdff7a"
+APPLICATION_VERSION = "2024-11-23.3b6cc82c7f5342c39ba027f29687c556"
 
 class PodcastApp(App):
     BINDINGS = [

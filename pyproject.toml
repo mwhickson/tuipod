@@ -1,6 +1,6 @@
 [project]
 name = "tuipod"
-version = "2024-11-22.5c24b1e90d6c4ae28faceec6bbcdff7a"
+version = "2024-11-23.3b6cc82c7f5342c39ba027f29687c556"
 description = "A TUI podcast player."
 requires-python = ">=3.12"
 readme = "README.md"
