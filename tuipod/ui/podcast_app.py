@@ -2,6 +2,8 @@ import json
 
 from urllib.request import build_opener, install_opener
 
+from pynput import keyboard
+
 from textual import on
 from textual.app import App, ComposeResult
 from textual.binding import Binding
@@ -22,7 +24,7 @@ from tuipod.ui.search_input import SearchInput
 # logging.basicConfig(filename="debug.log", filemode="w", level="NOTSET")
 
 APPLICATION_NAME = "tuipod"
-APPLICATION_VERSION = "2024-11-23.3b6cc82c7f5342c39ba027f29687c556"
+APPLICATION_VERSION = "2024-11-24.6147baed9d02462989c1d8cc65b87af5-beta"
 
 class PodcastApp(App):
     BINDINGS = [
@@ -49,6 +51,10 @@ class PodcastApp(App):
         opener = build_opener()
         install_opener(opener)
         opener.addheaders = [("User-Agent", "Mozilla/9.9 (github.com/mwhickson/tuipod) Chrome/999.9.9.9 Gecko/99990101 Firefox/999 Safari/999.9")]
+
+        # hookup for multimedia button (play/pause for now)
+        self.keylistener = keyboard.Listener(on_release=self.on_listen_keys)
+        self.keylistener.start()
 
     def compose(self) -> ComposeResult:
         yield Header(icon="#", show_clock=True, time_format="%I:%M %p")
@@ -241,3 +247,7 @@ class PodcastApp(App):
             self.subscriptions.persist()
             await self._refresh_podcast_list(self.searcher.search_text)
             self.notify("unsubscribed from: {0}".format(title), timeout=3)
+
+    def on_listen_keys(self, key) -> None:
+        if key == keyboard.Key.media_play_pause:
+            self.action_toggle_play()

@@ -1,6 +1,6 @@
 [project]
 name = "tuipod"
-version = "2024-11-23.3b6cc82c7f5342c39ba027f29687c556"
+version = "2024-11-24.6147baed9d02462989c1d8cc65b87af5-beta"
 description = "A TUI podcast player."
 requires-python = ">=3.12"
 readme = "README.md"
@@ -17,7 +17,7 @@ authors = [
     { name = "Matthew Hickson" }
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
     "License :: OSI Approved :: MIT License",
@@ -27,8 +27,9 @@ classifiers = [
 ]
 dependencies = [
     "beautifulsoup4>=4.12.3",
-    #"playsound3>=2.4.0",
     "miniaudio>=1.61",
+    #"playsound3>=2.4.0",
+    "pynput>=1.7.7",
     "textual>=0.85.2"
 ]
 
